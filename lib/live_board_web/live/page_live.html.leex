@@ -15,8 +15,8 @@
         <%= for block <- item["blocks"] do %>
         <div x-on:drop="event.stopPropagation(); event.preventDefault();"
              :class="{ 'drag-and-drop__items--adding': adding }"
-             x-on:dragover.prevent="adding = true"
-             x-on:dragleave.prevent="adding = false"
+             x-on:dragover.prevent="adding = true;"
+             x-on:dragleave.prevent="adding = false;"
              x-on:drop.prevent="
                 const id = event.dataTransfer.getData('text/plain');
                 const target = event.target.closest('.board-task');
@@ -40,7 +40,7 @@
                 <%= for task <- block["tasks"] do %>
                 <div x-data="{ dragging: false }"
                      x-on:dragend="dragging = false"
-                     :class="{ 'drag-and-drop__item--dragging': dragging }"
+                     :class="{ 'drag-and-drop__item--dragging': dragging, 'hidden': dragging }"
                      draggable="true"
                      x-on:dragstart.self="
                         dragging = true;
