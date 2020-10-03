@@ -1,0 +1,73 @@
+<!-- component -->
+<div class="bg-blue w-full h-screen font-sans" x-data="{ adding: false, removing: false }" phx-hook="boardDraggable" id="boardDraggable">
+    <%= live_component @socket, BoardNav, id: :board_nav %>
+    <%= live_component @socket, TaskModal, id: :task_modal, open_modal: @open_modal, click_task: @click_task %>
+    <div class="flex m-4 justify-between">
+        <div class="flex">
+            <ul class="list-reset text-white hidden md:flex">
+                <li><span class="font-bold text-lg px-2">☆</span></li>
+                <li><span class="border-l border-blue-lighter px-2 text-sm">sprint58</span></li>
+            </ul>
+        </div>
+    </div>
+    <%= for item <- @data["lanes"] do %>
+    <div class="flex px-4 pb-8 items-start overflow-x-scroll">
+        <%= for block <- item["blocks"] do %>
+        <div x-on:drop="event.stopPropagation(); event.preventDefault();"
+             :class="{ 'drag-and-drop__items--adding': adding }"
+             x-on:dragover.prevent="adding = true"
+             x-on:dragleave.prevent="adding = false"
+             x-on:drop.prevent="
+                const id = event.dataTransfer.getData('text/plain');
+                const target = event.target.closest('.board-task');
+                const element = document.getElementById(id);
+                if (target) {
+                    target.parentNode.insertBefore(element, target.nextSibling);
+                } else {
+                    event.target.closest('.add-card').parentNode.insertBefore(element, event.target.closest('.add-card'))
+                }
+                boardDraggableHook.pushEvent('move_task', {id})
+            "
+            class="rounded bg-grey-light  flex-no-shrink w-64 p-2 mr-3"
+        >
+            <div class="flex justify-between py-1">
+                <h3 class="text-sm"><%= block["name"]%></h3>
+                <svg class="h-4 fill-current text-grey-dark cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M5 10a1.999 1.999 0 1 0 0 4 1.999 1.999 0 1 0 0-4zm7 0a1.999 1.999 0 1 0 0 4 1.999 1.999 0 1 0 0-4zm7 0a1.999 1.999 0 1 0 0 4 1.999 1.999 0 1 0 0-4z"/>
+                </svg>
+            </div>
+            <div class="text-sm mt-2">
+                <%= for task <- block["tasks"] do %>
+                <div x-data="{ dragging: false }"
+                     x-on:dragend="dragging = false"
+                     :class="{ 'drag-and-drop__item--dragging': dragging }"
+                     draggable="true"
+                     x-on:dragstart.self="
+                        dragging = true;
+                        event.dataTransfer.effectAllowed = 'move';
+                        event.dataTransfer.setData('text/plain', event.target.id);
+                    "
+                    id="<%= task["task_id"] %>"
+                    phx-click="open_task_modal"
+                    phx-value-open_modal="<%= @open_modal %>"
+                    phx-value-task_id="<%= task["task_id"] %>"
+                    class="board-task bg-white p-2 rounded mt-1 border-b border-grey cursor-pointer hover:bg-grey-lighter"
+                >
+                    <%= task["task_name"] %>
+                    <div class="text-grey-darker mt-2 ml-2 flex justify-between items-start">
+                        <span class="text-xs flex items-center">
+                            <svg class="h-4 fill-current mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+                                <path d="M11 4c-3.855 0-7 3.145-7 7v28c0 3.855 3.145 7 7 7h28c3.855 0 7-3.145 7-7V11c0-3.855-3.145-7-7-7zm0 2h28c2.773 0 5 2.227 5 5v28c0 2.773-2.227 5-5 5H11c-2.773 0-5-2.227-5-5V11c0-2.773 2.227-5 5-5zm25.234 9.832l-13.32 15.723-8.133-7.586-1.363 1.465 9.664 9.015 14.684-17.324z"/>
+                            </svg>
+                            3/5
+                        </span>
+                    </div>
+                </div>
+                <%end  %>
+                <p class="add-card mt-3 text-grey-dark">添加卡片</p>
+            </div>
+        </div>
+        <%end  %>
+    </div>
+    <%end  %>
+</div>

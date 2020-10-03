@@ -1,0 +1,19 @@
+
+<div class="modal h-screen w-full fixed left-0 top-0 flex justify-center items-center>" style="background-color: rgba(0, 0, 0, 0.7); <%= if !(@open_modal), do: "display: none;" %>" >
+  <!-- modal -->
+  <div class="bg-white rounded shadow-lg w-1/2" style="height: 80%; margin: auto;">
+    <!-- modal header -->
+    <div class="border-b px-4 py-2 flex justify-between items-center">
+      <h3 class="font-semibold text-lg">任务</h3>
+      <button class="text-black close-modal" phx-click="close_modal" phx-value-open_modal="<%= @open_modal %>">&cross;</button>
+    </div>
+    <!-- modal body -->
+    <div class="p-3" style="height: 82%;">
+      <%= @click_task["task_name"] %>
+    </div>
+    <div class="flex justify-end items-center w-100 border-t p-3">
+      <button class="bg-red hover:bg-red px-3 py-1 rounded text-white mr-1 close-modal">取消</button>
+      <button class="bg-blue hover:bg-blue px-3 py-1 rounded text-white">确定</button>
+    </div>
+  </div>
+</div>
