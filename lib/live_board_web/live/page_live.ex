@@ -445,9 +445,29 @@ defmodule LiveBoardWeb.PageLive do
     {:ok, socket}
   end
 
+  # @impl true
+  # def handle_event("move_task", params, socket) do
+  #   IO.inspect(params, label: "move_task>>>>>>", pretty: true)
+  #   {:noreply, socket}
+  # end
+
   @impl true
-  def handle_event("move_task", params, socket) do
-    IO.inspect(params, label: "move_task>>>>>>", pretty: true)
+  def handle_event(
+        "move_task",
+        %{
+          "draggedId" => dragged_id,
+          "dropzoneBlockId" => dropzone_block_id,
+          "draggableIndex" => draggable_index
+        },
+        %{assigns: _assigns} = socket
+      ) do
+    IO.puts(1111)
+
+    new_data =
+      find_dragged(dragged_id)
+      |> update_list(dragged_id, dropzone_block_id, draggable_index)
+
+    socket = socket |> assign(:data, new_data)
     {:noreply, socket}
   end
 
@@ -464,4 +484,77 @@ defmodule LiveBoardWeb.PageLive do
 
   def handle_params(_params, _uri, socket), do: {:noreply, socket}
 
+  defp find_dragged(dragged_id) do
+    [[[dragged]]] =
+      @data["lanes"]
+      |> Enum.map(fn line ->
+        Enum.map(line["blocks"], fn block ->
+          Enum.filter(block["tasks"], fn task ->
+            task["task_id"] == dragged_id
+          end)
+        end)
+        |> Enum.filter(fn item -> length(item) != 0 end)
+      end)
+
+    dragged
+  end
+
+  def update_list(dragged, dragged_id, dropzone_block_id, draggable_index) do
+    %{@data | "lanes" => @data["lanes"] |> remove_dragged(dragged_id)}
+    # |> IO.inspect(label: "ksksksk", pretty: true)
+    |> insert_dragged(dragged, dropzone_block_id, draggable_index)
+    |> insert_dragged(dragged, dropzone_block_id, draggable_index)
+  end
+
+  def remove_dragged(list, dragged_id) do
+    list
+    |> Enum.map(fn line ->
+      %{
+        line
+        | "blocks" =>
+            Enum.map(line["blocks"], fn block ->
+              %{
+                block
+                | "tasks" =>
+                    Enum.filter(block["tasks"], fn task ->
+                      task["task_id"] != dragged_id
+                    end)
+              }
+            end)
+      }
+    end)
+  end
+
+  def insert_dragged(data, dragged, dropzone_block_id, draggable_index) do
+    %{
+      data
+      | "lanes" =>
+          Enum.map(data["lanes"], fn lane ->
+            %{
+              lane
+              | "blocks" =>
+                  Enum.map(lane["blocks"], fn block ->
+                    cond do
+                      block["block_id"] == dropzone_block_id and
+                          !Enum.find(block["tasks"], fn item ->
+                            item["task_id"] == dragged["task_id"]
+                          end) ->
+                        %{
+                          block
+                          | "tasks" =>
+                              List.insert_at(
+                                block["tasks"],
+                                String.to_integer(draggable_index) + 1,
+                                dragged
+                              )
+                        }
+
+                      true ->
+                        block
+                    end
+                  end)
+            }
+          end)
+    }
+  end
 end

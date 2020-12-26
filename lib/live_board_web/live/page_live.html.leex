@@ -27,13 +27,16 @@
              x-on:drop.prevent="
                 const id = event.dataTransfer.getData('text/plain');
                 const target = event.target.closest('.board-task');
+                const dropzoneId = target.id;
+                const draggableIndex = target.getAttribute('index');
+                const dropzoneBlockId = target.getAttribute('dropzoneBlockId');
                 const element = document.getElementById(id);
-                if (target) {
-                    target.parentNode.insertBefore(element, target.nextSibling);
-                } else {
-                    event.target.closest('.add-card').parentNode.insertBefore(element, event.target.closest('.add-card'))
-                }
-                boardDraggableHook.pushEvent('move_task', {id})
+                //if (target) {
+                //    target.parentNode.insertBefore(element, target.nextSibling);
+                //} else {
+                 //   event.target.closest('.add-card').parentNode.insertBefore(element, event.target.closest('.add-card'))
+                //}
+                boardDraggableHook.pushEvent('move_task', {draggedId: id, dropzoneBlockId, draggableIndex})
             "
             class="rounded bg-grey-light  flex-no-shrink w-64 p-2 mr-3"
         >
@@ -44,7 +47,7 @@
                 </svg>
             </div>
             <div class="text-sm mt-2">
-                <%= for task <- block["tasks"] do %>
+                <%= for {task, index} <- block["tasks"] |> Enum.with_index() do %>
                 <div x-data="{ dragging: false }"
                      x-on:dragend="dragging = false"
                      :class="{ 'drag-and-drop__item--dragging': dragging, 'hidden': dragging }"
@@ -54,11 +57,13 @@
                         event.dataTransfer.effectAllowed = 'move';
                         event.dataTransfer.setData('text/plain', event.target.id);
                     "
-                    id="<%= task["task_id"] %>"
-                    class="board-task bg-white p-2 rounded mt-1 border-b border-grey cursor-pointer hover:bg-grey-lighter"
+                    id='<%= task["task_id"] %>'
+                    index='<%= index %>'
+                    dropzoneBlockId='<%= block["block_id"] %>'
+                    class='board-task bg-white p-2 rounded mt-1 border-b border-grey cursor-pointer hover:bg-grey-lighter'
                 >
-										<%= live_patch to: "/task_detail?task_id=#{task["task_id"]}", replace: false, style: "text-decoration:none;color:#333;" do %>
-										  <%= task["task_name"] %>
+                    <%= live_patch to: "/task_detail?task_id=#{task["task_id"]}", replace: false, style: "text-decoration:none;color:#333;" do %>
+                      <%= task["task_name"] %>
                     <% end %>
                     <div class="text-grey-darker mt-2 ml-2 flex justify-between items-start">
                         <span class="text-xs flex items-center">

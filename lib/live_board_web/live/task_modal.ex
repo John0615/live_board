@@ -5,6 +5,4 @@ defmodule TaskModal do
   def mount(socket) do
     {:ok, socket}
   end
-
-
 end
