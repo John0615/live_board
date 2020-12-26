@@ -438,18 +438,14 @@ defmodule LiveBoardWeb.PageLive do
 
   @impl true
   def mount(_params, _session, socket) do
+    if connected?(socket), do: Phoenix.PubSub.subscribe(LiveBoard.PubSub, "board")
+
     socket =
       socket
       |> assign(:data, @data)
 
     {:ok, socket}
   end
-
-  # @impl true
-  # def handle_event("move_task", params, socket) do
-  #   IO.inspect(params, label: "move_task>>>>>>", pretty: true)
-  #   {:noreply, socket}
-  # end
 
   @impl true
   def handle_event(
@@ -461,13 +457,16 @@ defmodule LiveBoardWeb.PageLive do
         },
         %{assigns: _assigns} = socket
       ) do
-    IO.puts(1111)
+    # IO.puts(1111)
 
     new_data =
       find_dragged(dragged_id)
       |> update_list(dragged_id, dropzone_block_id, draggable_index)
 
     socket = socket |> assign(:data, new_data)
+
+    Phoenix.PubSub.broadcast(LiveBoard.PubSub, "board", {:update_board, new_data})
+
     {:noreply, socket}
   end
 
@@ -556,5 +555,14 @@ defmodule LiveBoardWeb.PageLive do
             }
           end)
     }
+  end
+
+  @impl true
+  def handle_info({:update_board, new_data}, socket) do
+    socket =
+      socket
+      |> assign(:data, new_data)
+
+    {:noreply, socket}
   end
 end
