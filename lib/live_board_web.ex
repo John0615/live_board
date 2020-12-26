@@ -90,6 +90,8 @@ defmodule LiveBoardWeb do
       import LiveBoardWeb.ErrorHelpers
       import LiveBoardWeb.Gettext
       alias LiveBoardWeb.Router.Helpers, as: Routes
+      import LiveBoardWeb.LiveHelpers, only: [live_modal: 3]
+
     end
   end
 

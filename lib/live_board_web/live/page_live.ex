@@ -441,8 +441,6 @@ defmodule LiveBoardWeb.PageLive do
     socket =
       socket
       |> assign(:data, @data)
-      |> assign(:open_modal, false)
-      |> assign(:click_task, %{})
 
     {:ok, socket}
   end
@@ -453,22 +451,17 @@ defmodule LiveBoardWeb.PageLive do
     {:noreply, socket}
   end
 
-  def handle_event("open_task_modal", params, socket) do
-    click_task = Enum.find(@data["tasks"], fn item -> item["task_id"] == params["task_id"] end)
+  @impl true
+  def handle_params(%{"task_id" => task_id} = _params, _uri, socket) do
+    task_detail = Enum.find(@data["tasks"], fn item -> item["task_id"] == task_id end)
 
     socket =
       socket
-      |> assign(:open_modal, !String.to_atom(params["open_modal"]))
-      |> assign(:click_task, click_task)
+      |> assign(:task_detail, task_detail)
 
     {:noreply, socket}
   end
 
-  def handle_event("close_modal", params, socket) do
-    socket =
-      socket
-      |> assign(:open_modal, !String.to_atom(params["open_modal"]))
+  def handle_params(_params, _uri, socket), do: {:noreply, socket}
 
-    {:noreply, socket}
-  end
 end

@@ -18,6 +18,7 @@ defmodule LiveBoardWeb.Router do
     pipe_through :browser
 
     live "/", PageLive, :index
+    live "/task_detail", PageLive, :detail
   end
 
   # Other scopes may use custom stacks.
