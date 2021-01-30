@@ -452,26 +452,14 @@ defmodule LiveBoardWeb.PageLive do
     {:ok, socket}
   end
 
-  @impl true
-  def handle_event(
-        "move_task",
-        %{
-          "draggedId" => dragged_id,
-          "dropzoneBlockId" => dropzone_block_id,
-          "draggableIndex" => draggable_index
-        },
-        %{assigns: _assigns} = socket
-      ) do
-    # IO.puts(1111)
 
+  @impl true
+  def handle_event("dropped", %{"draggedId" => dragged_id, "dropzoneId" => drop_zone_id,"draggableIndex" => draggable_index}, socket) do
     new_data =
       find_dragged(dragged_id)
-      |> update_list(dragged_id, dropzone_block_id, draggable_index)
-
-    socket = socket |> assign(:data, new_data)
-
-    Phoenix.PubSub.broadcast(LiveBoard.PubSub, "board", {:update_board, new_data})
-
+        |> update_list(dragged_id, drop_zone_id, draggable_index)
+      socket = socket |> assign(:data, new_data)
+      Phoenix.PubSub.broadcast(LiveBoard.PubSub, "board", {:update_board, new_data})
     {:noreply, socket}
   end
 
