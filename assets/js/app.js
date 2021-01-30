@@ -2,6 +2,7 @@
 // The MiniCssExtractPlugin is used to separate it out into
 // its own CSS file.
 import "../css/app.scss"
+import '../static/fonts/iconfont.css'
 import 'alpinejs'
 import boardDraggable from './boardDraggable.js'
 // webpack automatically bundles all modules in your

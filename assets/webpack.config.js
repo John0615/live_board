@@ -42,6 +42,16 @@ module.exports = (env, options) => {
             'sass-loader',
             'postcss-loader'
           ],
+        },
+        {
+          test: /\.(eot|ttf|svg|woff|woff2)$/,
+          use: {
+            loader: 'file-loader',
+            options: {
+              name: '[name]_[hash].[ext]',
+              outputPath: 'font/'
+            }
+          }
         }
       ]
     },
