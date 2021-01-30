@@ -1,84 +1,165 @@
-<!-- component -->
-<div class="bg-blue w-full h-screen font-sans" x-data="{ adding: false, removing: false }" phx-hook="boardDraggable" id="boardDraggable">
-    <%= live_component @socket, BoardNav, id: :board_nav %>
-    <%= if @live_action in [:detail] do %>
-        <%= live_modal @socket, TaskModal,
-        id: "task_detail_modal",
-        title: "",
-        action: @live_action,
-        task_detail: @task_detail,
-        return_to: "/" %>
-    <% end %>
-    <div class="flex m-4 justify-between">
-        <div class="flex">
-            <ul class="list-reset text-white hidden md:flex">
-                <li><span class="font-bold text-lg px-2">☆</span></li>
-                <li><span class="border-l border-blue-lighter px-2 text-sm">sprint58</span></li>
-            </ul>
-        </div>
-    </div>
-    <%= for item <- @data["lanes"] do %>
-    <div class="flex px-4 pb-8 items-start overflow-x-scroll">
-        <%= for block <- item["blocks"] do %>
-        <div x-on:drop="event.stopPropagation(); event.preventDefault();"
-             :class="{ 'drag-and-drop__items--adding': adding }"
-             x-on:dragover.prevent="adding = true;"
-             x-on:dragleave.prevent="adding = false;"
-             x-on:drop.prevent="
-                const id = event.dataTransfer.getData('text/plain');
-                const target = event.target.closest('.board-task');
-                const dropzoneId = target.id;
-                const draggableIndex = target.getAttribute('index');
-                const dropzoneBlockId = target.getAttribute('dropzoneBlockId');
-                const element = document.getElementById(id);
-                //if (target) {
-                //    target.parentNode.insertBefore(element, target.nextSibling);
-                //} else {
-                 //   event.target.closest('.add-card').parentNode.insertBefore(element, event.target.closest('.add-card'))
-                //}
-                boardDraggableHook.pushEvent('move_task', {draggedId: id, dropzoneBlockId, draggableIndex})
-            "
-            class="rounded bg-grey-light  flex-no-shrink w-64 p-2 mr-3"
-        >
-            <div class="flex justify-between py-1">
-                <h3 class="text-sm"><%= block["name"]%></h3>
-                <svg class="h-4 fill-current text-grey-dark cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M5 10a1.999 1.999 0 1 0 0 4 1.999 1.999 0 1 0 0-4zm7 0a1.999 1.999 0 1 0 0 4 1.999 1.999 0 1 0 0-4zm7 0a1.999 1.999 0 1 0 0 4 1.999 1.999 0 1 0 0-4z"/>
-                </svg>
+    <div class="h-screen flex flex-col">
+      <header class="px-2 bg-blue-500">
+        <div class="flex relative justify-between items-center py-1 border-gray-200">
+          <div class="flex items-center">
+            <div class="relative">
+              <img class="h-8" title="返回首页" alt="Leangoo" src="https://www.leangoo.com/kanban/application/views/images/leangoo_logo.png">
             </div>
-            <div class="text-sm mt-2">
-                <%= for {task, index} <- block["tasks"] |> Enum.with_index() do %>
-                <div x-data="{ dragging: false }"
-                     x-on:dragend="dragging = false"
-                     :class="{ 'drag-and-drop__item--dragging': dragging, 'hidden': dragging }"
-                     draggable="true"
-                     x-on:dragstart.self="
-                        dragging = true;
-                        event.dataTransfer.effectAllowed = 'move';
-                        event.dataTransfer.setData('text/plain', event.target.id);
-                    "
-                    id='<%= task["task_id"] %>'
-                    index='<%= index %>'
-                    dropzoneBlockId='<%= block["block_id"] %>'
-                    class='board-task bg-white p-2 rounded mt-1 border-b border-grey cursor-pointer hover:bg-grey-lighter'
-                >
-                    <%= live_patch to: "/task_detail?task_id=#{task["task_id"]}", replace: false, style: "text-decoration:none;color:#333;" do %>
-                      <%= task["task_name"] %>
-                    <% end %>
-                    <div class="text-grey-darker mt-2 ml-2 flex justify-between items-start">
-                        <span class="text-xs flex items-center">
-                            <svg class="h-4 fill-current mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-                                <path d="M11 4c-3.855 0-7 3.145-7 7v28c0 3.855 3.145 7 7 7h28c3.855 0 7-3.145 7-7V11c0-3.855-3.145-7-7-7zm0 2h28c2.773 0 5 2.227 5 5v28c0 2.773-2.227 5-5 5H11c-2.773 0-5-2.227-5-5V11c0-2.773 2.227-5 5-5zm25.234 9.832l-13.32 15.723-8.133-7.586-1.363 1.465 9.664 9.015 14.684-17.324z"/>
-                            </svg>
-                            3/5
-                        </span>
+            <div class="relative w-50 pt-1">
+              <input type="text" class="transition duration-500  transform focus:bg-white focus:outline-none focus:w-72 rounded-xl bg-blue-400 h-8 pl-2 pr-5 py-2 text-sm leading-tight text-gray-900 placeholder-gray-600" />
+              <span class="absolute inset-y-0 right-2 pt-1 pl-3 flex items-center">
+                <span class="leangoo icon-search text-sm text-white"></span>
+              </span>
+            </div>
+          </div>
+          <div class="absolute left-1/2 -ml-32 flex flex-shrink-0">
+            <button class="focus:outline-none">
+              <span class="leangoo icon-down ml-1 text-xs text-white"></span>
+              <span class="text-white text-sm">领鸽软件开发 - Leangoo研发</span>
+            </button>
+          </div>
+          <div class="flex items-center">
+            <button class="w-8 h-8 focus:outline-none hover:bg-indigo-200 bg-blue-400 rounded">
+              <span class="leangoo icon-plus text-sm text-white"></span>
+            </button>
+            <div class="flex w-30 h-8 mx-1 bg-blue-400 rounded">
+              <button class="w-8 h-8 focus:outline-none bg-blue-400 px-1  rounded hover:bg-indigo-200">
+                <span class="leangoo icon-navigation text-sm text-white"></span>
+              </button>
+              <button class="flex flex-row items-center px-1 border-l focus:outline-none hover:bg-indigo-200 flex-shrink-0">
+                <span class="text-sm text-white">看板导航</span>
+                <span class="leangoo icon-down ml-1 text-xs text-white"></span>
+              </button>
+            </div>
+            <button class="w-20 h-8 bg-blue-400 flex flex-row items-center rounded mr-1 focus:outline-none hover:bg-indigo-200">
+              <img class="w-8 h-8 rounded-l" src="https://www.leangoo.com/kanban/avatar/553/553226d5c55187475650a615d1e8b6679b4a22.jpeg" alt="">
+              <span class="text-white m-auto">John</span>
+            </button>
+            <button class="w-8 h-8 bg-blue-400 rounded mr-1 focus:outline-none hover:bg-indigo-200">
+              <span class="leangoo icon-help ml-1 text-sm text-white"></span>
+            </button>
+            <button class="w-8 h-8 bg-blue-400 rounded focus:outline-none hover:bg-indigo-200">
+              <span class="leangoo icon-warning ml-1 text-lg text-white"></span>
+            </button>
+          </div>
+        </div>
+      </header>
+      <header class="px-2 bg-blue-600">
+        <div class="flex justify-between items-center  py-1 border-gray-200">
+          <div class="flex items-center">
+            <button class="w-34 h-8 flex flex-row items-center rounded hover:bg-indigo-200 flex-shrink-0">
+              <span class="text-white font-bold">Sprint 65 V6.4.2</span>
+              <span class="leangoo icon-down ml-1 text-sm text-white"></span>
+            </button>
+            <button class="w-34 h-8 ml-2 flex flex-row items-center rounded hover:bg-indigo-200 flex-shrink-0">
+              <span class="text-white text-xs">1月4日 - 1月7日</span>
+            </button>
+            <button class="w-34 h-8 flex flex-row items-center flex-shrink-0">
+              <span class="text-white text-xs">Leangoo研发 - V6</span>
+            </button>
+            <button class="w-6 h-6 flex ml-2 flex-row items-center rounded hover:bg-indigo-200">
+              <span class="leangoo icon-star text-sm text-white"></span>
+            </button>
+            <button class="w-6 h-6 flex ml-2 flex-row items-center rounded hover:bg-indigo-200">
+              <span class="leangoo icon-chart text-sm text-white"></span>
+            </button>
+            <button class="w-28 h-6 flex ml-2 flex-row items-center rounded hover:bg-indigo-200 flex-shrink-0">
+              <span class="leangoo icon-team-mates text-sm text-white"></span>
+              <span class="text-white text-xs">项目成员可见</span>
+            </button>
+            <button class="w-14 h-6 flex ml-2 flex-row items-center rounded hover:bg-indigo-200 flex-shrink-0">
+              <span class="leangoo icon-fold text-sm text-white"></span>
+              <span class="text-white ml-1 text-sm">折叠</span>
+            </button>
+            <button class="w-18 h-6 flex ml-2 flex-row items-center rounded hover:bg-indigo-200 flex-shrink-0">
+              <span class="leangoo icon-piliangcaozuo text-sm text-white"></span>
+              <span class="text-white ml-1 text-sm">批量操作</span>
+            </button>
+          </div>
+          <div class="flex items-center">
+            <button class="w-12 h-6 flex flex-row items-center rounded hover:bg-indigo-200">
+              <span class="leangoo icon-member text-sm text-white"></span>
+              <span class="text-white ml-1 text-sm">成员</span>
+            </button>
+            <button class="w-12 h-6 ml-2 flex flex-row items-center rounded hover:bg-indigo-200">
+              <span class="leangoo icon-filter text-sm text-white"></span>
+              <span class="text-white ml-1 text-sm">筛选</span>
+            </button>
+            <button class="w-14 h-6 ml-2 mr-2 flex flex-row items-center rounded hover:bg-indigo-200">
+              <span class="leangoo icon-menu text-white text-sm"></span>
+              <span class="text-white ml-1 text-sm">菜单</span>
+            </button>
+          </div>
+        </div>
+      </header>
+      <div class="flex flex-col flex-auto overflow-scroll bg-blue-600 p-3 pt-0">
+        <!--标题栏-->
+        <div class="flex flex-row sticky top-0 z-10">
+          <%= for item <- @data["blocks"] do %>
+          <div class="flex-shrink-0 w-64 px-2 py-1 flex mr-2 items-center justify-between bg-gray-100 rounded-t">
+            <div class="flex items-center">
+              <h3 class="text-sm text-gray-600 font-medium"><%= item["name"] %></h3>
+              <span class="text-gray-500 ml-1 text-sm">8</span>
+            </div>
+            <div class="flex items-center">
+              <span class="text-white text-xs bg-red-300 px-1 rounded-2xl">12</span>
+              <button class="ml-1">
+                <span class="leangoo icon-menu text-gray-500 text-base"></span>
+              </button>
+            </div>
+          </div>
+          <% end %>
+        </div>
+        <!--泳道-->
+        <div class="flex flex-col">
+          <%= for lane <- @data["lanes"] do %>
+          <div class="flex flex-row mb-2">
+            <!--列-->
+            <%= for block <- lane["blocks"] do %>
+            <div class="flex-shrink-0 w-64 p-1 mr-2 flex flex-col place-self-start overflow-hidden bg-gray-100 rounded-md">
+              <ul class="mt-1 flex flex-col max-h-106 overflow-scroll">
+                <%= for task <- block["tasks"] do %>
+                <li class="relative mt-1 pl-1 bg-white rounded-md  hover:bg-gray-200">
+                  <a href="block bg-white rounded-md shadow">
+                    <div class="flex items-center">
+                      <span class="text-xs text-center text-gray-500 w-12 h-4 rounded bg-gray-300">#11737</span>
+                      <div>
+                        <span class="pr-1.5 ml-1 rounded bg-blue-500"></span>
+                        <span class="text-xs ml-1 text-gray-500"><%= task["card_type_name"] %></span>
+                      </div>
                     </div>
-                </div>
-                <%end  %>
-                <p class="add-card mt-3 text-grey-dark">添加卡片</p>
+                    <div class="flex justify-between">
+                      <p class="text-xs font-medium leading-snug text-gray-600 w-60">
+                        <%= task["task_name"] %>
+                      </p>
+                    </div>
+                    <div class="flex justify-between items-baseline">
+                      <div class="mt-2">
+                        <button class="h-8 w-8 rounded">
+                          <img class="w-8 h-8 rounded" src="https://www.leangoo.com/kanban/avatar/553/553226d5c55187475650a615d1e8b6679b4a22.jpeg" alt=""/>
+                        </button>
+                        <button class="h-8 w-8 rounded">
+                          <img class="w-8 h-8 rounded" src="https://www.leangoo.com/kanban/avatar/553/553226d5c55187475650a615d1e8b6679b4a22.jpeg" alt=""/>
+                        </button>
+                      </div>
+                    </div>
+                  </a>
+                  <span class="absolute top-0 right-7 leangoo icon-edit ml-1 text-sm text-gray-400 hover:text-gray-900 transform hover:scale-125"></span>
+                  <span class="absolute top-0 right-2 leangoo icon-delete ml-1 text-sm text-gray-400 hover:text-gray-900 transform hover:scale-125"></span>
+                </li>
+                <% end %>
+              </ul>
+              <div class="mt-2 flex justify-between">
+                <span class="text-sm text-gray-500">添加卡片</span>
+                <button>
+                  <span class="leangoo icon-hide text-gray-500 text-xs"></span>
+                </button>
+              </div>
             </div>
+            <% end %>
+          </div>
+          <% end %>
         </div>
-        <%end  %>
+
+      </div>
     </div>
-    <%end  %>
-</div>

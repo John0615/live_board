@@ -7,31 +7,36 @@ defmodule LiveBoardWeb.PageLive do
         "block_id" => "b59ebb16c0291275",
         "list_id" => "9452430",
         "lane_id" => "0000000002951008",
-        "block_status" => nil
+        "block_status" => nil,
+        "name" => "待整理原始需求"
       },
       %{
         "block_id" => "648c2a28bc0961ec",
         "list_id" => "9452431",
         "lane_id" => "0000000002951008",
-        "block_status" => nil
+        "block_status" => nil,
+        "name" => "计划"
       },
       %{
         "block_id" => "ea0463d8dfcd43f2",
         "list_id" => "9452432",
         "lane_id" => "0000000002951008",
-        "block_status" => nil
+        "block_status" => nil,
+        "name" => "进行中"
       },
       %{
         "block_id" => "7d8645019af496a4",
         "list_id" => "9452433",
         "lane_id" => "0000000002951008",
-        "block_status" => nil
+        "block_status" => nil,
+        "name" => "已完成"
       },
       %{
         "block_id" => "cfad0ca4f202972e",
         "list_id" => "9452434",
         "lane_id" => "0000000002951008",
-        "block_status" => nil
+        "block_status" => nil,
+        "name" => "已验收"
       }
     ],
     "tasks" => [
