@@ -455,11 +455,15 @@ defmodule LiveBoardWeb.PageLive do
 
   @impl true
   def handle_event("dropped", %{"draggedId" => dragged_id, "dropzoneId" => drop_zone_id,"draggableIndex" => draggable_index}, socket) do
-    new_data =
-      find_dragged(dragged_id)
-        |> update_list(dragged_id, drop_zone_id, draggable_index)
-      socket = socket |> assign(:data, new_data)
-      Phoenix.PubSub.broadcast(LiveBoard.PubSub, "board", {:update_board, new_data})
+    dragged = find_dragged(socket.assigns.data, dragged_id)
+    # 移除原来的卡片
+    data = Map.update!(socket.assigns.data, "lanes", fn lanes -> lanes |> remove_dragged(dragged_id) end)
+    # 更新卡片位置
+    new_data = insert_dragged(dragged, data, drop_zone_id, draggable_index)
+    #更新数据
+    socket = socket |> assign(:data, new_data)
+    #同步数据
+    Phoenix.PubSub.broadcast(LiveBoard.PubSub, "board", {:update_board, new_data})
     {:noreply, socket}
   end
 
@@ -476,9 +480,9 @@ defmodule LiveBoardWeb.PageLive do
 
   def handle_params(_params, _uri, socket), do: {:noreply, socket}
 
-  defp find_dragged(dragged_id) do
+  defp find_dragged(data, dragged_id) do
     [[[dragged]]] =
-      @data["lanes"]
+      data["lanes"]
       |> Enum.map(fn line ->
         Enum.map(line["blocks"], fn block ->
           Enum.filter(block["tasks"], fn task ->
@@ -491,63 +495,39 @@ defmodule LiveBoardWeb.PageLive do
     dragged
   end
 
-  def update_list(dragged, dragged_id, dropzone_block_id, draggable_index) do
-    %{@data | "lanes" => @data["lanes"] |> remove_dragged(dragged_id)}
-    # |> IO.inspect(label: "ksksksk", pretty: true)
-    |> insert_dragged(dragged, dropzone_block_id, draggable_index)
-    |> insert_dragged(dragged, dropzone_block_id, draggable_index)
-  end
-
   def remove_dragged(list, dragged_id) do
     list
     |> Enum.map(fn line ->
-      %{
-        line
-        | "blocks" =>
-            Enum.map(line["blocks"], fn block ->
-              %{
-                block
-                | "tasks" =>
-                    Enum.filter(block["tasks"], fn task ->
-                      task["task_id"] != dragged_id
-                    end)
-              }
+      Map.update!(line, "blocks", fn blocks ->
+        Enum.map(blocks, fn block ->
+          Map.update!(block, "tasks", fn tasks ->
+            Enum.filter(tasks, fn task ->
+              task["task_id"] != dragged_id
             end)
-      }
+          end)
+        end)
+      end)
     end)
   end
 
-  def insert_dragged(data, dragged, dropzone_block_id, draggable_index) do
-    %{
-      data
-      | "lanes" =>
-          Enum.map(data["lanes"], fn lane ->
-            %{
-              lane
-              | "blocks" =>
-                  Enum.map(lane["blocks"], fn block ->
-                    cond do
-                      block["block_id"] == dropzone_block_id and
-                          !Enum.find(block["tasks"], fn item ->
-                            item["task_id"] == dragged["task_id"]
-                          end) ->
-                        %{
-                          block
-                          | "tasks" =>
-                              List.insert_at(
-                                block["tasks"],
-                                String.to_integer(draggable_index) + 1,
-                                dragged
-                              )
-                        }
-
-                      true ->
-                        block
-                    end
-                  end)
-            }
+  def insert_dragged(dragged, data, dropzone_block_id, draggable_index) do
+    Map.update!(data, "lanes", fn lanes ->
+      Enum.map(lanes, fn lane ->
+        Map.update!(lane, "blocks", fn blocks ->
+          Enum.map(blocks, fn block ->
+            cond do
+              block["block_id"] == dropzone_block_id and
+                  !Enum.find(block["tasks"], fn item ->
+                    item["task_id"] == dragged["task_id"]
+                  end) ->
+                Map.update!(block, "tasks", fn tasks ->  List.insert_at(tasks, draggable_index + 1, dragged) end)
+              true ->
+                block
+            end
           end)
-    }
+        end)
+      end)
+    end)
   end
 
   @impl true
