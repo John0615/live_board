@@ -1,0 +1,32 @@
+<div id="page_live_container" class="h-screen flex flex-col" :hook="PageLiveHook" style={@bg_style}>
+  <BoardNav id="component_board_nav" board_data={@board_data} />
+  <div id="board_container" class="flex flex-col flex-auto relative">
+    <BoardAction board_name={@board_name} board_data={@board_data} id="component_board_action" />
+    <div class="board-body p-3 pt-0 flex flex-col flex-auto overflow-auto w-screen h-[90vh]">
+      <!--列表头-->
+      <div id="list_header" class="flex flex-row sticky top-0 z-10">
+        {#if  Map.get(@board_data, "lists")}
+        {#for list <- @board_data["lists"]}
+        <ListHeader list={list} />
+        {/for}
+        {/if}
+      </div>
+      <!--泳道-->
+      <div id="lanes_div" class="flex flex-col">
+        {#if Map.get(@lane_data, "lanes")}
+        {#for lane <- @lane_data["lanes"]}
+        <Lane lane={lane} id={"component"<>lane["lane_id"]} />
+        {/for}
+        {/if}
+      </div>
+    </div>
+    <!--修改卡片弹框-->
+    <EditCardModal id="component_edit_task_modal" />
+    <!--看板侧边栏-->
+    <BoardAsideMenu board_tags={@board_tags} board_data={@board_data} id="component_board_aside_menu" />
+    <!--卡片弹框-->
+    <CardModal board_data={@board_data} board_tags={@board_tags} id="component_task_modal" />
+  </div>
+  <!--全局组件-->
+  <GlobalComponentsContainer id="component_global_components_container" />
+</div>
