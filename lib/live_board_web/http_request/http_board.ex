@@ -77,12 +77,20 @@ defmodule HttpBoard do
     )
   end
 
+  def load_card_comment_info(client, query_list) do
+    Tesla.post(client, "/task/getTaskComment", query_list)
+  end
+
   def add_check_list_item(client, query_list) do
     Tesla.post(client, "/chklst/addItem", query_list)
   end
 
   def update_check_list_item_checked(client, query_list) do
     Tesla.post(client, "/chklst/checked", query_list)
+  end
+
+  def add_comment(client, query_list) do
+    Tesla.post(client, "/task/addTaskComment", query_list)
   end
 
   def client(cookie) do

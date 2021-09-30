@@ -486,6 +486,14 @@ defmodule LiveBoardWeb.PageLive do
   end
 
   def handle_info(
+        {:update_card_comment_info, %{"card_comment_info" => card_comment_info}},
+        socket
+      ) do
+    CardComment.init_data("component_card_comment", card_comment_info)
+    {:noreply, socket}
+  end
+
+  def handle_info(
         {:edit_check_list_item,
          %{
            "item_id" => item_id,

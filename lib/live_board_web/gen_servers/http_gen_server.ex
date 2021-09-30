@@ -126,11 +126,36 @@ defmodule LiveBoard.LoadHttpData do
     |> HttpBoard.load_card_connection_info(query_list)
     |> then(fn result ->
       {:ok, %Tesla.Env{body: %{"message" => card_connection_info}}} = result
-      IO.inspect(card_connection_info, label: "8e98e9e9e9e", pretty: true)
+      # IO.inspect(card_connection_info, label: "8e98e9e9e9e", pretty: true)
 
       Process.send(
         live_pid,
         {:update_card_connection_info, %{"card_connection_info" => card_connection_info}},
+        []
+      )
+    end)
+
+    {:noreply, state}
+  end
+
+  def handle_cast(
+        {:load_card_comment_info,
+         %{
+           "live_pid" => live_pid,
+           "cookie" => cookie,
+           "query_list" => query_list
+         }},
+        state
+      ) do
+    HttpBoard.client(cookie)
+    |> HttpBoard.load_card_comment_info(query_list)
+    |> then(fn result ->
+      {:ok, %Tesla.Env{body: %{"message" => card_comment_info}}} = result
+      # IO.inspect(card_comment_info, label: "card_comment_info", pretty: true)
+
+      Process.send(
+        live_pid,
+        {:update_card_comment_info, %{"card_comment_info" => card_comment_info}},
         []
       )
     end)
@@ -325,6 +350,7 @@ defmodule LiveBoard.LoadHttpData do
     GenServer.cast(__MODULE__, {:load_card_check_list, params})
     GenServer.cast(__MODULE__, {:load_card_desc_info, params})
     GenServer.cast(__MODULE__, {:load_card_connection_info, params})
+    GenServer.cast(__MODULE__, {:load_card_comment_info, params})
     {:noreply, state}
   end
 

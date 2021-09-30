@@ -34,7 +34,7 @@ defmodule CardModal do
                 <!--检查项-->
                 <CardCheckList task_id={@task_detail["task_id"]} id="component_card_check_list" />
                 <!--评论-->
-                <CardComment id="component_card_comment" />
+                <CardComment task_detail={@task_detail} id="component_card_comment" />
               </div>
             </div>
             <!--右侧按钮组-->

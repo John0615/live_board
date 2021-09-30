@@ -4,6 +4,7 @@ defmodule BoardAction do
 
   prop(board_name, :string, required: false)
   prop(board_data, :map, required: true)
+  data is_multiple_mode, :boolean, default: false
 
   def render(assigns) do
     ~F"""
@@ -45,15 +46,15 @@ defmodule BoardAction do
             </svg>
             <span class="text-white text-[14px]">折叠</span>
           </button>
-          <button class="h-6 px-1 flex ml-1 flex-row items-center rounded hover:hover:bg-[rgba(255,255,255,.6)] flex-shrink-0">
+          <button :if={!@is_multiple_mode} :on-click="set_multiple_mode" class="h-6 px-1 flex ml-1 flex-row items-center rounded hover:hover:bg-[rgba(255,255,255,.6)] flex-shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
             </svg>
             <span class="text-white ml-1 text-[14px]">批量操作</span>
           </button>
-          <button class="h-6 bg-[#5cb85c] flex flex-row items-center rounded mr-1">
+          <button :if={@is_multiple_mode} class="h-6 bg-[#5cb85c] flex flex-row items-center rounded mr-1">
             <span class="h-6 text-sm text-white leading-6 px-2 font-bold rounded-[4px] cursor-pointer">批量操作</span>
-            <span class="text-white m-auto px-2 py-1 h-6 hover:bg-[#449d44]">
+            <span :on-click="cancel_multiple_mode" class="text-white m-auto px-2 py-1 h-6 hover:bg-[#449d44]">
               <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
               </svg>
@@ -75,5 +76,20 @@ defmodule BoardAction do
       <BoardSwitchDropdown id="component_board_switch_dropdown" project_id={@board_data["board"]["project_id"]} />
     </header>
     """
+  end
+
+
+  def handle_event("set_multiple_mode", _, socket) do
+    socket =
+      socket
+      |> assign(:is_multiple_mode, true)
+    {:noreply,  push_event(socket, "set_multiple_draggble_mode", %{})}
+  end
+
+  def handle_event("cancel_multiple_mode", _, socket) do
+    socket =
+      socket
+      |> assign(:is_multiple_mode, false)
+    {:noreply,  push_event(socket, "set_simple_draggble_mode", %{})}
   end
 end
