@@ -1,0 +1,53 @@
+Arguments: 
+  /Users/zhaoshuiping/.asdf/installs/nodejs/12.22.2/bin/node /Users/zhaoshuiping/.asdf/installs/nodejs/12.22.2/.npm/bin/yarn add tui-editor
+
+PATH: 
+  /Users/zhaoshuiping/.asdf/installs/nodejs/12.22.2/.npm/bin:/Users/zhaoshuiping/.asdf/installs/nodejs/12.22.2/bin:/Users/zhaoshuiping/.asdf/shims:/Users/zhaoshuiping/.asdf/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/zhaoshuiping/.asdf/bin
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  12.22.2
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: connect ECONNREFUSED 0.0.0.0:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1144:16)
+
+npm manifest: 
+  {
+    "name": "assets",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "deploy": "NODE_ENV=production postcss css/app.css -o ../priv/static/assets/app.css",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+      "autoprefixer": "^10.3.6",
+      "postcss": "^8.3.8",
+      "postcss-cli": "^9.0.1",
+      "postcss-import": "^14.0.2",
+      "tailwindcss": "^2.2.16",
+      "@tailwindcss/forms": "^0.3.3"
+    },
+    "dependencies": {
+      "alpinejs": "^3.4.2",
+      "@popperjs/core": "^2.9.3",
+      "clipboard": "^2.0.8",
+      "sortablejs": "^1.13.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
