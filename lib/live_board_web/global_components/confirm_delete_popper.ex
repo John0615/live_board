@@ -14,7 +14,7 @@ defmodule ConfirmDeletePopper do
       class="z-20"
       id="confirm_delete_popper_container"
       x-data="{is_show: false}"
-      @closepanel.window="PageLiveHook.pushEventTo('#confirm_delete_popper_container', 'cancel_delete')"
+      @closepanel.window="BoardLiveHook.pushEventTo('#confirm_delete_popper_container', 'cancel_delete')"
       @showconfirmdeletepopper.window="is_show=true">
       <div :if={@is_show}
         x-show="is_show"

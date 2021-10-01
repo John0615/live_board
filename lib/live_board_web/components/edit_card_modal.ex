@@ -15,7 +15,7 @@ defmodule EditCardModal do
           $refs.taskContentRef.style.height = $refs.taskContentRef.scrollHeight+'px';
           "
           @submit.prevent="
-          PageLiveHook.pushEventTo('#edit_task_container', 'save_task_name', {task_name: $refs.taskContentRef.value})
+          BoardLiveHook.pushEventTo('#edit_task_container', 'save_task_name', {task_name: $refs.taskContentRef.value})
           content='';
         "
         :on-window-keydown="hide"
@@ -48,7 +48,7 @@ defmodule EditCardModal do
               rounded min-h-[95px] w-full overflow-hidden shadow-none">{Phoenix.HTML.html_escape({:safe, String.replace(@task_detail["task_name"], "</br>", "\n")})}</textarea>
           <button
             @click="
-            PageLiveHook.pushEventTo('#edit_task_container', 'save_task_name', {task_name: $refs.taskContentRef.value})
+            BoardLiveHook.pushEventTo('#edit_task_container', 'save_task_name', {task_name: $refs.taskContentRef.value})
             "
             class="w-20 h-8 mt-2 bg-[rgb(0,121,191)] hover:bg-[rgb(2,106,167)] rounded text-white">保存</button>
         </div>

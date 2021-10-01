@@ -8,7 +8,7 @@ defmodule AddCard do
     ~F"""
     <div class="relative mt-1" id={"component_add_card_"<>@block_id}
       x-data="{ shiftPressed: false, content: '' }"
-      @submit.prevent={"PageLiveHook.pushEventTo('#component_add_card_#{@block_id}', 'add_card', {content: content});content='';"}>
+      @submit.prevent={"BoardLiveHook.pushEventTo('#component_add_card_#{@block_id}', 'add_card', {content: content});content='';"}>
       <div class="bg-white rounded-md">
         <textarea placeholder="Enter提交，Shift+Enter换行"
           @keydown.shift="shiftPressed = true"
@@ -36,7 +36,7 @@ defmodule AddCard do
         <span class="text-[14px] ml-[1px] text-[rgb(144,147,153)] ">用户故事</span>
       </div>
       <div class="flex flex-row items-center">
-        <button @click={"PageLiveHook.pushEventTo('#component_add_card_#{@block_id}', 'add_card', {content: content});content='';"}
+        <button @click={"BoardLiveHook.pushEventTo('#component_add_card_#{@block_id}', 'add_card', {content: content});content='';"}
           class="w-20 h-8 mt-2 bg-[rgb(0,121,191)] hover:bg-[rgb(2,106,167)] rounded text-white">添加</button>
         <button :on-click={"cancel_add_task", target: "#block_#{@block_id}"}
           class="w-20 h-8 mt-2 ml-2 bg-white hover:bg-gray-300 rounded">取消</button>

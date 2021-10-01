@@ -15,7 +15,7 @@ defmodule CardName do
       x-on:submit.prevent="
       isShowButton=false
       $refs.card_name_textarea.blur()
-      PageLiveHook.pushEventTo('#card_name_container', 'save_task_name', {task_name: $refs.card_name_textarea.value})
+      BoardLiveHook.pushEventTo('#card_name_container', 'save_task_name', {task_name: $refs.card_name_textarea.value})
       ">
       <textarea rows="1"
         @keydown.shift="shiftPressed = true"
@@ -42,7 +42,7 @@ defmodule CardName do
           <button @click="
           isShowButton=false
           $refs.card_name_textarea.blur()
-          PageLiveHook.pushEventTo('#card_name_container', 'save_task_name', {task_name: $refs.card_name_textarea.value})
+          BoardLiveHook.pushEventTo('#card_name_container', 'save_task_name', {task_name: $refs.card_name_textarea.value})
           "
             class="w-20 h-8 bg-[rgb(0,121,191)] hover:bg-[rgb(2,106,167)] rounded text-white">保存</button>
           <button @click="

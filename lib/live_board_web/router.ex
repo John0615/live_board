@@ -22,7 +22,7 @@ defmodule LiveBoardWeb.Router do
   scope "/", LiveBoardWeb do
     pipe_through [:browser, :session]
 
-    live "/kanban/board/go/:board_id", PageLive, :index
+    live "/kanban/board/go/:board_id", BoardLive, :index
     get "/", PageController, :index
   end
 

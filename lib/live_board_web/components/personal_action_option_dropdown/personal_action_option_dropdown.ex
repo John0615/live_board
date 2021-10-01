@@ -59,7 +59,7 @@ defmodule PersonalActionOptionDropdown do
   def render(assigns) do
     ~F"""
     <div id="personal_action_option_dropdown_container" :hook="PersonalActionOptionDropdownHook"
-      x-data @closepanel.window="PageLiveHook.pushEventTo('#personal_action_option_dropdown_container', 'close_personal_action_option')"
+      x-data @closepanel.window="BoardLiveHook.pushEventTo('#personal_action_option_dropdown_container', 'close_personal_action_option')"
       class="z-20">
       <nav :if={@is_show} data-popper-arrow
         x-init="PersonalActionOptionDropdownHook.init()"

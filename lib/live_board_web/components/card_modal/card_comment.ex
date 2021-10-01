@@ -52,7 +52,7 @@ defmodule CardComment do
           <div class="flex flex-row items-center my-2">
             <button x-on:click="
               $refs.card_comment_textarea.blur()
-              PageLiveHook.pushEventTo('#card_comment_container', 'save_task_comment', {comment: $refs.card_comment_textarea.value})
+              BoardLiveHook.pushEventTo('#card_comment_container', 'save_task_comment', {comment: $refs.card_comment_textarea.value})
               $refs.card_comment_textarea.value=''
               "
               class="w-20 h-8 bg-[rgb(0,121,191)] hover:bg-[rgb(2,106,167)] rounded text-white">保存</button>

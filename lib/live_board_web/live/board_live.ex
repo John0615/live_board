@@ -1,4 +1,4 @@
-defmodule LiveBoardWeb.PageLive do
+defmodule LiveBoardWeb.BoardLive do
   use Surface.LiveView
   import LiveBoardWeb.LiveHelpers
   data(lane_data, :map, default: %{})

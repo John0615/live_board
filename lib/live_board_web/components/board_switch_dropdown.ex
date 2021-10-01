@@ -8,7 +8,7 @@ defmodule BoardSwitchDropdown do
   def render(assigns) do
     ~F"""
     <div id="board_switch_dropdown_container" :hook="BoardSwitchDropdownHook"
-      x-data @closepanel.window="PageLiveHook.pushEventTo('#board_switch_dropdown_container', 'close_board_switch_dropdown')"
+      x-data @closepanel.window="BoardLiveHook.pushEventTo('#board_switch_dropdown_container', 'close_board_switch_dropdown')"
       class="z-20">
       <nav :if={@is_show} data-popper-arrow class="flex flex-col z-20 max-h-[500px]">
         <div class="w-72 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none" role="menu" >

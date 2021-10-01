@@ -1,4 +1,4 @@
-<div id="page_live_container" class="h-screen flex flex-col" :hook="PageLiveHook" style={@bg_style}>
+<div id="page_live_container" class="h-screen flex flex-col" :hook="BoardLiveHook" style={@bg_style}>
   <BoardNav id="component_board_nav" board_data={@board_data} />
   <div id="board_container" class="flex flex-col flex-auto relative">
     <BoardAction board_name={@board_name} board_data={@board_data} id="component_board_action" />
