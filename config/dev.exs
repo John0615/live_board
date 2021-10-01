@@ -76,7 +76,7 @@ config :live_board, LiveBoardWeb.Endpoint,
   ]
 
 config :live_board,
-  live_base_url: "http://dev.leangoo.com:4000",
+  live_base_url: "http://dev.leangoo.com:4001",
   old_base_url: "http://dev.leangoo.com"
 
 # Do not include metadata nor timestamps in development logs
