@@ -6,9 +6,7 @@ import Config
 # and secrets from environment variables or elsewhere. Do not define
 # any compile-time configuration in here, as it won't be applied.
 # The block below contains prod specific runtime configuration.
-config :live_board,
-  live_base_url: "http://dev.leangoo.com:4000",
-  old_base_url: "http://dev.leangoo.com"
+
 
 if config_env() == :prod do
   database_url =
