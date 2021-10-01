@@ -195,6 +195,17 @@ defmodule LiveBoardWeb.PageLive do
   #   {:noreply, socket}
   # end
 
+  def handle_info({:switch_multiple_mode, %{"is_multiple_mode" => is_multiple_mode}}, socket) do
+    Enum.each(socket.assigns.lane_data["lanes"], fn lane ->
+      Enum.each(lane["blocks"], fn block ->
+        Enum.each(block["tasks"], fn task ->
+          Card.multiple_mode("component" <> task["task_id"], is_multiple_mode)
+        end)
+      end)
+    end)
+    {:noreply, socket}
+  end
+
   @impl true
   def handle_info(
         {:update_board_base_data, %{"board_base_data" => board_base_data} = _params},

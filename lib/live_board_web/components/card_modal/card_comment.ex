@@ -2,7 +2,7 @@ defmodule CardComment do
   use Surface.LiveComponent
 
   data(card_comment_info, :list, default: [])
-  prop task_detail, :map, required: true
+  prop(task_detail, :map, required: true)
 
   def render(assigns) do
     ~F"""

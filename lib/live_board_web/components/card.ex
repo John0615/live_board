@@ -2,6 +2,7 @@ defmodule Card do
   use Surface.LiveComponent
 
   data(board_data, :map, default: %{})
+  data multiple_mode, :boolean, default: false
   prop(task, :map, required: true)
 
   def render(assigns) do
@@ -77,6 +78,10 @@ defmodule Card do
     send_update(__MODULE__, id: card_id, task: task_data)
   end
 
+  def multiple_mode(card_id, mode) do
+    send_update(__MODULE__, id: card_id, multiple_mode: mode)
+  end
+
   def handle_event("edit_card", _, socket) do
     {:noreply, push_event(socket, "edit_card", %{task_id: socket.assigns.task["task_id"]})}
   end
@@ -86,10 +91,14 @@ defmodule Card do
     {:noreply, socket}
   end
 
-  def handle_event("show_card_modal", _params, socket) do
+  def handle_event("show_card_modal", _params, socket) when socket.assigns.multiple_mode==false do
     CardModal.show(socket.assigns.task)
     # 请求数据
     send(self(), {:load_card_modal_data, %{"task" => socket.assigns.task}})
     {:noreply, socket}
+  end
+
+  def handle_event("show_card_modal", _params, socket) do
+   {:noreply, socket}
   end
 end

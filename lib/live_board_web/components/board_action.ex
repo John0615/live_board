@@ -4,7 +4,7 @@ defmodule BoardAction do
 
   prop(board_name, :string, required: false)
   prop(board_data, :map, required: true)
-  data is_multiple_mode, :boolean, default: false
+  data(is_multiple_mode, :boolean, default: false)
 
   def render(assigns) do
     ~F"""
@@ -78,18 +78,21 @@ defmodule BoardAction do
     """
   end
 
-
   def handle_event("set_multiple_mode", _, socket) do
     socket =
       socket
       |> assign(:is_multiple_mode, true)
-    {:noreply,  push_event(socket, "set_multiple_draggble_mode", %{})}
+
+    send(self(), {:switch_multiple_mode, %{"is_multiple_mode" => true}})
+    {:noreply, push_event(socket, "set_multiple_draggble_mode", %{})}
   end
 
   def handle_event("cancel_multiple_mode", _, socket) do
     socket =
       socket
       |> assign(:is_multiple_mode, false)
-    {:noreply,  push_event(socket, "set_simple_draggble_mode", %{})}
+
+    send(self(), {:switch_multiple_mode, %{"is_multiple_mode" => false}})
+    {:noreply, push_event(socket, "set_simple_draggble_mode", %{})}
   end
 end
