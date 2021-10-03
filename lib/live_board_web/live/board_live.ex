@@ -8,8 +8,8 @@ defmodule LiveBoardWeb.BoardLive do
   data(bg_style, :string, default: "background-color: rgb(0, 99, 177)")
 
   @impl true
-  def mount(%{"board_id" => _board_id} = _params, %{"cookie" => cookie}, socket) do
-    if connected?(socket), do: Phoenix.PubSub.subscribe(LiveBoard.PubSub, "board")
+  def mount(%{"board_id" => board_id} = _params, %{"cookie" => cookie}, socket) do
+    if connected?(socket), do: Phoenix.PubSub.subscribe(LiveBoard.PubSub, "board_#{board_id}")
 
     socket =
       socket
