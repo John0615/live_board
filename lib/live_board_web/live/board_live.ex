@@ -611,5 +611,32 @@ defmodule LiveBoardWeb.BoardLive do
     {:noreply, socket}
   end
 
+  def handle_info(
+      {:save_card_desc,
+      %{
+        "task_desc" => task_desc,
+        "task_id" => task_id,
+        "action" => action
+      }},
+      socket
+    ) do
+  Process.send(
+    LiveBoard.LoadHttpData,
+    {:save_card_desc,
+    %{
+      "cookie" => socket.assigns.cookie,
+      "query_list" => [
+        board_id: socket.assigns.board_data["board"]["board_id"],
+        task_id: task_id,
+        task_desc: task_desc,
+        action: action
+      ]
+    }},
+    []
+  )
+
+  {:noreply, socket}
+  end
+
   def handle_info(_params, socket), do: {:noreply, socket}
 end

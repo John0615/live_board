@@ -10,7 +10,7 @@ defmodule CardModal do
     ~F"""
     <div id="task_modal_container">
       <div :if={@is_show} class="h-screen w-full fixed left-0 top-0 flex justify-center items-start overflow-y-scroll bg-[rgba(0,0,0,0.5)] z-10">
-        <div class="md:w-[600px] lg:w-[900px] px-4 py-3 bg-white rounded-lg shadow-lg mt-[80px] mx-auto flex-grow-0">
+        <div class="md:w-[600px] lg:w-[900px] px-4 py-3 bg-white rounded-lg shadow-lg mt-[80px] mb-2 mx-auto flex-grow-0">
           <!--顶部功能条-->
           <NavAction id="component_nav_action" task_detail={@task_detail} />
           <div class="border-b pb-2 flex justify-between">
@@ -26,7 +26,7 @@ defmodule CardModal do
                 <!-- 自定义字段 -->
                 <CardFields id="component_card_fields" />
                 <!--描述-->
-                <CardDesc id="component_card_desc" />
+                <CardDesc task_id={@task_detail["task_id"]} id="component_card_desc" />
                 <!-- 附件 -->
                 <CardUploadFile id="component_card_upload_file" task_id={@task_detail["task_id"]} board_id={@board_data["board"]["board_id"]} />
                 <!-- 关联 -->
@@ -56,4 +56,5 @@ defmodule CardModal do
   def handle_event("close_card_modal", _params, socket) do
     {:noreply, assign(socket, is_show: false, task_detail: %{})}
   end
+
 end

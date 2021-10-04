@@ -430,4 +430,23 @@ defmodule LiveBoard.LoadHttpData do
 
     {:noreply, state}
   end
+
+  def handle_info({:save_card_desc,
+   %{
+      "cookie" => cookie,
+      "query_list" => query_list
+    }}, state) do
+    HttpBoard.client(cookie)
+    |> HttpBoard.save_card_desc(query_list)
+    |> then(fn result ->
+      {:ok, %Tesla.Env{body: %{"message" => add_card_desk_result}} = _result} =
+        result
+
+      IO.inspect(add_card_desk_result,
+        label: "add_card_desk_result",
+        pretty: true
+      )
+    end)
+    {:noreply, state}
+  end
 end

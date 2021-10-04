@@ -70,6 +70,10 @@ defmodule HttpBoard do
     Tesla.post(client, "/task/getTaskDesc", query_list)
   end
 
+  def save_card_desc(client, query_list) do
+    Tesla.post(client, "/task/editTaskDesc", query_list)
+  end
+
   def load_card_connection_info(client, query_list) do
     Tesla.get(
       client,
