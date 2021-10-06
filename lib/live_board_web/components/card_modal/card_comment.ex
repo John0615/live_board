@@ -54,6 +54,7 @@ defmodule CardComment do
               $refs.card_comment_textarea.blur()
               BoardLiveHook.pushEventTo('#card_comment_container', 'save_task_comment', {comment: $refs.card_comment_textarea.value})
               $refs.card_comment_textarea.value=''
+              is_show_add_commont_area=false
               "
               class="w-20 h-8 bg-[rgb(0,121,191)] hover:bg-[rgb(2,106,167)] rounded text-white">保存</button>
             <button x-on:click="
