@@ -638,5 +638,10 @@ defmodule LiveBoardWeb.BoardLive do
   {:noreply, socket}
   end
 
+  def handle_info({:filter_card_by_content, %{"content" => content}=_params}, socket) do
+    IO.inspect(content, label: "9383847844848", pretty: true)
+    {:noreply, socket}
+  end
+
   def handle_info(_params, socket), do: {:noreply, socket}
 end

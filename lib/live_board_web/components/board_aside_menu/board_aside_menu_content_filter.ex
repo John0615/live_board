@@ -1,32 +1,32 @@
 defmodule BoardAsideMenuContentFilter do
   use Surface.LiveComponent
+  alias Surface.Components.Form
+  alias Surface.Components.Form.{Field, Label, TextInput}
 
   prop(board_tags, :list, required: true)
   prop(board_data, :map, required: true)
   data(is_show_more_tags, :boolean, default: false)
   data(hidden_more_tag_from_index, :integer, default: 6)
+  data filter_form, :form, default: %{}
 
   def render(assigns) do
     ~F"""
-    <form class="h-full divide-y divide-gray-200 flex flex-col shadow-xl">
+    <Form for={:filter_form} change="change" opts={autocomplete: "off"}
+      class="h-full divide-y divide-gray-200 flex flex-col shadow-xl">
       <div class="flex-1 h-0 overflow-y-auto">
         <div class="flex-1 flex flex-col justify-between">
           <div class="px-4 divide-y divide-gray-200 sm:px-6">
             <div class="space-y-6 pt-6 pb-5">
-              <div>
-                <label for="project-name" class="block text-sm font-medium text-gray-900">
-                  按内容
-                </label>
+              <Field name="content">
+                <Label class="block text-sm font-medium text-gray-900">按内容</Label>
                 <div class="mt-1">
-                  <input type="text" name="project-name" id="project-name" class="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
+                  <TextInput value={@filter_form["content"]} class="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md" />
                 </div>
-              </div>
-              <div>
-                <label for="project-name" class="block text-sm font-medium text-gray-900">
-                  按标签
-                </label>
+              </Field>
+              <Field name="label">
+                <Label class="block text-sm font-medium text-gray-900">按标签</Label>
                 <div class="mt-1">
-                  <input type="text" name="project-name" id="project-name" class="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
+                  <TextInput value={@filter_form["label"]} class="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md" />
                 </div>
                 <ul class="mt-2">
                   {#for {tag, index} <- @board_data["board"]["tags"] |> Enum.with_index()}
@@ -42,13 +42,13 @@ defmodule BoardAsideMenuContentFilter do
                 </ul>
                 <div :if={!@is_show_more_tags && length(@board_data["board"]["tags"])>@hidden_more_tag_from_index+1} class="flex mt-1">
                   <button type="button" :on-click="show_more_tag"
-                   class="flex-1 bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm
-                   text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2
-                   focus:ring-offset-2 focus:ring-indigo-500">
+                  class="flex-1 bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm
+                  text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2
+                  focus:ring-offset-2 focus:ring-indigo-500">
                     加载更多
                   </button>
                 </div>
-              </div>
+              </Field>
               <div>
                 <label for="project-name" class="block text-sm font-medium text-gray-900">
                   按成员
@@ -78,11 +78,16 @@ defmodule BoardAsideMenuContentFilter do
           </div>
         </div>
       </div>
-    </form>
+    </Form>
     """
   end
 
   def handle_event("show_more_tag", _, socket) do
     {:noreply, assign(socket, :is_show_more_tags, true)}
+  end
+
+  def handle_event("change", %{"filter_form" => %{"content" => content, "label" => _label}} = _params, socket) do
+    send(self(), {:filter_card_by_content, %{"content" => content}})
+    {:noreply, socket}
   end
 end
