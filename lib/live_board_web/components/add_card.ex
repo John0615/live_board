@@ -7,7 +7,13 @@ defmodule AddCard do
   def render(assigns) do
     ~F"""
     <div class="relative mt-1" id={"component_add_card_"<>@block_id}
-      x-data="{ shiftPressed: false, content: '' }"
+      x-data={"{ shiftPressed: false, content: '',block_id: '#{@block_id}' }"}
+      x-init="
+        $nextTick(() => {
+          let el=document.getElementById(block_id);
+          el.scrollTop=el.scrollHeight;
+        });
+      "
       @submit.prevent={"BoardLiveHook.pushEventTo('#component_add_card_#{@block_id}', 'add_card', {content: content});content='';"}>
       <div class="bg-white rounded-md">
         <textarea placeholder="Enter提交，Shift+Enter换行"
