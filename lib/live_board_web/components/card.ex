@@ -35,7 +35,7 @@ defmodule Card do
                   </button>
                 {#match %{"head_img_path" => head_img_path}}
                   <button class="h-8 w-8 rounded mr-[2px]">
-                    <img class="w-8 h-8 rounded" src={"http://dev.leangoo.com/kanban"<>head_img_path} alt=""/>
+                    <img class="w-8 h-8 rounded" src={"#{Application.get_env(:live_board, :old_base_url)}/kanban"<>head_img_path} alt=""/>
                   </button>
                 {#match _}
               {/case}

@@ -99,7 +99,7 @@ defmodule HttpBoard do
 
   def client(cookie) do
     middleware = [
-      {Tesla.Middleware.BaseUrl, "http://dev.leangoo.com/kanban"},
+      {Tesla.Middleware.BaseUrl, "#{Application.get_env(:live_board, :old_base_url)}/kanban"},
       Tesla.Middleware.EncodeFormUrlencoded,
       Tesla.Middleware.JSON,
       {Tesla.Middleware.Headers, [{"cookie", cookie}]}

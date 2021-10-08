@@ -64,7 +64,7 @@ defmodule BoardAsideMenuContentFilter do
                         class="w-8 h-8 text-[12px] leading-8 text-center font-bold rounded-[4px]
                          bg-[#ccc] cursor-pointer">{user["head_img_letter"]}</span>
                       {#match %{"head_img_path" => head_img_path}}
-                        <img class="w-8 h-8 rounded-l" src={"http://dev.leangoo.com/kanban"<>head_img_path} alt="">
+                        <img class="w-8 h-8 rounded-l" src={"#{Application.get_env(:live_board, :old_base_url)}/kanban"<>head_img_path} alt="">
                       {#match _}
                     {/case}
                     <span class="ml-2">{user["nick_name"]}</span>
