@@ -39,11 +39,11 @@ defmodule CardDesc do
     send_update(__MODULE__, id: id, card_desc_info: data)
   end
 
-  def handle_event("save_card_desc", %{"task_desc" => task_desc} = _params, socket) do
+  def handle_event("save_card_desc", %{"task_desc" => task_desc, "action" => action} = _params, socket) do
     send(self(), {:save_card_desc, %{
       "task_id" => socket.assigns.task_id,
       "task_desc" => task_desc,
-      "action" => "edit_task_desc"
+      "action" => action
       }})
     {:noreply, socket}
   end
