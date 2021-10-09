@@ -14,7 +14,7 @@
       <!--泳道-->
       <div id="lanes_div" class="flex flex-col">
         {#if Map.get(@lane_data, "lanes")}
-        {#for lane <- @lane_data["lanes"]}
+        {#for lane <- Map.get(@filter_lane_data, "lanes") || @lane_data["lanes"]}
         <Lane lane={lane} id={"component"<>lane["lane_id"]} />
         {/for}
         {/if}

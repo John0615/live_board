@@ -2,6 +2,7 @@ defmodule LiveBoardWeb.BoardLive do
   use Surface.LiveView
   import LiveBoardWeb.LiveHelpers
   data(lane_data, :map, default: %{})
+  data(filter_lane_data, :map, default: %{})
   data(board_data, :map, default: %{})
   data(board_name, :string, default: "")
   data(board_tags, :list, default: [])
@@ -638,9 +639,27 @@ defmodule LiveBoardWeb.BoardLive do
   {:noreply, socket}
   end
 
+  def handle_info({:filter_card_by_content, %{"content" => ""}=_params}, socket) do
+    {:noreply, assign(socket, :filter_lane_data, %{})}
+  end
+
   def handle_info({:filter_card_by_content, %{"content" => content}=_params}, socket) do
-    IO.inspect(content, label: "9383847844848", pretty: true)
-    {:noreply, socket}
+    filter_lane_data =
+      Map.update!(socket.assigns.lane_data, "lanes", fn lanes ->
+        Enum.map(lanes, fn lane ->
+          Map.update!(lane, "blocks", fn blocks ->
+            Enum.map(blocks, fn block ->
+              Map.update!(block, "tasks", fn tasks ->
+                Enum.filter(tasks, fn task ->
+                  task["task_name"] |> String.match?(~r/#{content}/)
+                end)
+              end)
+            end)
+          end)
+        end)
+      end)
+
+    {:noreply, assign(socket, :filter_lane_data, filter_lane_data)}
   end
 
   def handle_info(_params, socket), do: {:noreply, socket}
