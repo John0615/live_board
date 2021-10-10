@@ -1,0 +1,19 @@
+services:
+  live-board:
+    container_name: "live_board"
+    sysctls:
+      net.core.somaxconn: 65535
+    ulimits:
+      nofile:
+        soft: "65536"
+        hard: "65536"
+    build:
+      context: .
+      args:
+        HTTPS_PROXY: ${HTTP_PROXY}
+        HTTP_PROXY: ${HTTP_PROXY}
+    restart: always
+    env_file:
+      - .env
+    ports:
+      -  4001:4001
