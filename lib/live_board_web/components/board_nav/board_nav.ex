@@ -39,7 +39,8 @@ defmodule BoardNav do
                 <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
               </svg>
             </button>
-            <button class="flex flex-row items-center px-1 border-l focus:outline-none flex-shrink-0 hover:bg-[rgba(255,255,255,.3)]">
+            <button :on-click={"show_board_navigation_dropdown", target: "#board_navgation_dropdown_container"}
+              class="board_navgation flex flex-row items-center px-1 border-l focus:outline-none flex-shrink-0 hover:bg-[rgba(255,255,255,.3)]">
               <span class="text-sm text-white">看板导航</span>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -80,7 +81,11 @@ defmodule BoardNav do
       <PersonalActionOptionDropdown id="component_personal_action_option_dropdown" />
       <!--背景设置下拉框-->
       <BackgoundSetting id="component_background_setting" />
+      <!--看板导航下拉框-->
+      <BoardNavigationDropdown id="component_board_navgation_dropdown" />
     </header>
     """
   end
+
+
 end
