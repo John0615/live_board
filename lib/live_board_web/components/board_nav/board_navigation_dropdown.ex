@@ -1,18 +1,27 @@
 defmodule BoardNavigationDropdown do
   use Surface.LiveComponent
   alias Surface.Components.LivePatch
+  alias Surface.Components.Form
+  alias Surface.Components.Form.{Field, TextInput}
 
   data is_show, :boolean, default: false
 
   def render(assigns) do
     ~F"""
-    <div x-data id="board_navgation_dropdown_container" :hook="BoardNavigationDropdownHook">
+    <div x-data id="board_navgation_dropdown_container" class="z-20" :hook="BoardNavigationDropdownHook">
       <nav :if={@is_show} x-init="BoardNavigationDropdownHook.init()"
-        class="flex flex-col z-20 max-h-[500px]">
+        class="flex flex-col max-h-[500px]">
         <div class="w-72 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none" role="menu" >
           <div class="px-4 py-3" role="none">
             <p class="text-sm font-medium text-gray-900 truncate" role="none">看板导航</p>
           </div>
+          <Form for={:filter_form} change="change" opts={autocomplete: "off", class: "mx-1"}>
+            <Field name="content">
+              <div class="mt-1">
+                <TextInput class="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md" />
+              </div>
+            </Field>
+          </Form>
           <div class="py-1" role="none">
             <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
             <span class="text-[#428bca] text-left font-bold block px-4 py-2 text-sm">555665656</span>
