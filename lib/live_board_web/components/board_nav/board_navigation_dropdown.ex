@@ -4,6 +4,7 @@ defmodule BoardNavigationDropdown do
   alias Surface.Components.Form
   alias Surface.Components.Form.{Field, TextInput}
 
+  prop project_id, :string, required: true
   data is_show, :boolean, default: false
 
   def render(assigns) do
@@ -18,7 +19,7 @@ defmodule BoardNavigationDropdown do
           <Form for={:filter_form} change="change" opts={autocomplete: "off", class: "mx-1"}>
             <Field name="content">
               <div class="mt-1">
-                <TextInput class="block w-full shadow-sm sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md" />
+                <TextInput opts={placeholder: "输入看板名称进行过滤..."} class="block w-full shadow-sm sm:text-sm border-blue-300 focus:outline-none focus:ring-0 rounded-md" />
               </div>
             </Field>
           </Form>
@@ -39,6 +40,7 @@ defmodule BoardNavigationDropdown do
   end
 
   def handle_event("show_board_navigation_dropdown", _params, socket) do
+    send(self(), {:get_all_board_list, %{"project_id" => socket.assigns.project_id}})
     {:noreply, assign(socket, :is_show, true)}
   end
 end

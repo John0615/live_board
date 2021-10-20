@@ -82,7 +82,7 @@ defmodule BoardNav do
       <!--背景设置下拉框-->
       <BackgoundSetting id="component_background_setting" />
       <!--看板导航下拉框-->
-      <BoardNavigationDropdown id="component_board_navgation_dropdown" />
+      <BoardNavigationDropdown id="component_board_navgation_dropdown" project_id={@board_data["board"]["project_id"]} />
     </header>
     """
   end
